@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { Button, Divider, Drawer, List, ListItem } from "@mui/material";
+import { Divider, Drawer, List, ListItem } from "@mui/material";
 
 const TopBar = () => {
   const [open, setOpen] = useState(false);
