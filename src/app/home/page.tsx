@@ -102,7 +102,7 @@ const handleCreate = (payBill: string) => {
   const yearBE = now.getFullYear() + 543;
   const dateAt = `${pad(now.getHours())}:${pad(now.getMinutes())} ${pad(
     now.getDate()
-  )}/${pad(now.getMonth() + 1)}/พ.ศ. ${yearBE}`;
+  )}/${pad(now.getMonth() + 1)}/${yearBE}`;
 
   const data = {
     address,
