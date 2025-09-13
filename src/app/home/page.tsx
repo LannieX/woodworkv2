@@ -1,32 +1,100 @@
 "use client";
 
-import TopBar from "@/componants/topBar";
+import DialogConfirm from "@/componants/dialog";
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const woodOptions = [
   { id: 1, label: "TEST1" },
-  { id: 1, label: "TEST1" },
+  { id: 2, label: "TEST2" },
+  { id: 3, label: "TEST3" },
 ];
 
+const pad = (n: number) => n.toString().padStart(2, "0");
+
 const HomePage = () => {
-  const [address, setAddress] = useState<string>('');
-  const [woodType, setWoodType] = useState<string>('');
-  const [carNumber, setCarNumber] = useState<string>('');
-  const [weight, setWeight] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
+  //stateData
+  const [address, setAddress] = useState<string>("");
+  const [woodType, setWoodType] = useState<string>("");
+  const [carNumber, setCarNumber] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+
+  //dataDropdown
+  const [woodTypeDropdown, setWoodTypeDropdown] = useState<string[]>([]);
+  const [carNumberDropdown, setCarNumberDropdown] = useState<string[]>([]);
+  const [addressDropdown, setAddressDropdown] = useState<string[]>([]);
+
+  //Dialog
+  const [open, setOpen] = useState(false);
+  const [actionType, setActionType] = useState<string | null>(null);
+  
 
   const handleResetValue = () => {
-    setAddress('');
-    setWoodType('');
-    setCarNumber('');
-    setWeight('');
-    setPrice('');
+    setAddress("");
+    setWoodType("");
+    setCarNumber("");
+    setWeight("");
+    setPrice("");
   };
 
-  const handleCreate = () => {
-    console.log("data", address, woodType, weight, carNumber, price);
+    const fetchTypes = async () => {
+    try {
+      const res = await axios.get("https://wood-api-zl5b.onrender.com/type");
+      console.log("TYPES:", res.data);
+
+      const parsed = res.data.map((item: string[]) => item[0]);
+
+      setWoodTypeDropdown(parsed);
+    } catch (err) {
+      console.error("FETCH TYPE ERROR", err);
+    }
+  };
+
+  const fetchCarNumber = async () => {
+    try {
+      const res = await axios.get("https://wood-api-zl5b.onrender.com/car");
+      const parsed = res.data.map((item: string[]) => item[0]);
+      setCarNumberDropdown(parsed);
+    } catch (err) {
+      console.error("FETCH CODES ERROR", err);
+    }
+  };
+
+    const fetchAddress = async () => {
+    try {
+      const res = await axios.get("https://wood-api-zl5b.onrender.com/address");
+      const parsed = res.data.map((item: string[]) => item[0]);
+      setAddressDropdown(parsed);
+    } catch (err) {
+      console.error("FETCH CODES ERROR", err);
+    }
+  };
+
+  const handleOpen = (type: string) => {
+    setActionType(type);
+    setOpen(true);
+  };
+
+  const handleConfirm = () => {
+    console.log("ทำรายการ:", actionType);
+    setOpen(false);
+    handleCreate(actionType ?? '')
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    setActionType(null);
+  };
+
+
+  const handleCreate = (payBill: string) => {
+    const now = new Date();
+    const yearBE = now.getFullYear() + 543;
+    const dateAt = `${pad(now.getHours())}:${pad(now.getMinutes())} ${pad(
+      now.getDate()
+    )}/${pad(now.getMonth() + 1)}/พ.ศ. ${yearBE}`;
 
     const data = {
       address,
@@ -34,103 +102,111 @@ const HomePage = () => {
       carNumber,
       weight,
       price,
+      payBill,
+      dateAt,
     };
+
+    console.log("data", data);
+
     axios
       .post(
-        "https://api.sheetbest.com/sheets/0f74a006-170a-437f-ae8d-957035ed2de4",
+        "https://wood-api-zl5b.onrender.com/data",
         data
       )
       .then((res) => {
-        console.log(res);
+        console.log("POST success", res.data);
+        handleResetValue();
+      })
+      .catch((err) => {
+        console.error("POST error", err);
       });
-      handleResetValue()
   };
 
-  return (
-    <>
-      <TopBar />
-      <div className="w-full h-screen bg-white p-3">
-        <div className="w-full flex flex-col justify-center gap-5 pt-5">
-          <Autocomplete
-            disablePortal
-            fullWidth
-            options={woodOptions}
-            getOptionLabel={(option) => option.label}
-            value={
-              woodOptions.find((option) => option.label === address) || null
-            }
-            onChange={(event, newValue) => setAddress(newValue?.label ?? '')}
-            renderInput={(params) => (
-              <TextField {...params} label="สถานที่" fullWidth />
-            )}
-          />
-          <Autocomplete
-            disablePortal
-            fullWidth
-            options={woodOptions}
-            getOptionLabel={(option) => option.label}
-            value={
-              woodOptions.find((option) => option.label === woodType) || null
-            }
-            onChange={(event, newValue) => setWoodType(newValue?.label ?? '')}
-            renderInput={(params) => (
-              <TextField {...params} label="ชนิดไม้" fullWidth />
-            )}
-          />
-          <Autocomplete
-            disablePortal
-            fullWidth
-            options={woodOptions}
-            getOptionLabel={(option) => option.label}
-            value={
-              woodOptions.find((option) => option.label === carNumber) || null
-            }
-            onChange={(event, newValue) =>
-              setCarNumber(newValue?.label ?? '')
-            }
-            renderInput={(params) => (
-              <TextField {...params} label="ทะเบียนรถ" fullWidth />
-            )}
-          />
+  useEffect(() => {
+ fetchTypes()
+ fetchAddress()
+ fetchCarNumber()
 
-          <TextField
-            id="outlined-basic"
-            label="น้ำหนัก"
-            variant="outlined"
-            type="number"
-            inputProps={{
-              step: "0.01",
-              min: "0",
-            }}
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          />
-          <TextField
-            id="outlined-basic"
-            label="ราคา"
-            variant="outlined"
-            type="number"
-            inputProps={{
-              step: "0.01",
-              min: "0",
-            }}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          <div className="w-full flex flex-row gap-6 justify-center mt-10">
-            <div
-              className="w-[80%] h-[40px] flex items-center rounded-[15px] justify-center bg-green-500 hover:bg-green-600 cursor-pointer"
-              onClick={handleCreate}
-            >
-              <p>จ่ายบิล</p>
-            </div>
-            <div className="w-[80%] h-[40px] flex items-center rounded-[15px] justify-center bg-red-500 hover:bg-red-600 cursor-pointer">
-              <p>ไม่จ่ายบิล</p>
-            </div>
-          </div>
+}, []);
+
+
+  return (
+    <div className="w-full h-screen bg-white p-3">
+      <div className="w-full flex flex-col justify-center gap-5 pt-5">
+        <Autocomplete
+          disablePortal
+          fullWidth
+          options={addressDropdown}
+          getOptionLabel={(option) => option}
+          value={address}
+          onChange={(event, newValue) => setAddress(newValue ?? "")}
+          renderInput={(params) => (
+            <TextField {...params} label="สถานที่" fullWidth />
+          )}
+        />
+        <Autocomplete
+          disablePortal
+          fullWidth
+          options={woodTypeDropdown}
+          getOptionLabel={(option) => option}
+          value={woodType}
+          onChange={(event, newValue) => setWoodType(newValue ?? "")}
+          renderInput={(params) => (
+            <TextField {...params} label="ชนิดไม้" fullWidth />
+          )}
+        />
+
+        <Autocomplete
+          disablePortal
+          fullWidth
+          options={carNumberDropdown}
+          getOptionLabel={(option) => option}
+          value={carNumber}
+          onChange={(event, newValue) => setCarNumber(newValue ?? "")}
+          renderInput={(params) => (
+            <TextField {...params} label="ทะเบียนรถ" fullWidth />
+          )}
+        />
+
+        <TextField
+          label="น้ำหนัก"
+          variant="outlined"
+          type="number"
+          inputProps={{ step: "0.01", min: "0" }}
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        />
+        <TextField
+          label="ราคา"
+          variant="outlined"
+          type="number"
+          inputProps={{ step: "0.01", min: "0" }}
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+
+        <div className="w-full flex flex-row gap-6 justify-center mt-10">
+          <div
+        className="w-[80%] h-[40px] flex items-center rounded-[15px] justify-center bg-green-500 hover:bg-green-600 cursor-pointer"
+        onClick={() => handleOpen("จ่ายบิล")}
+      >
+        <p>จ่ายบิล</p>
+      </div>
+      <div
+        className="w-[80%] h-[40px] flex items-center rounded-[15px] justify-center bg-red-500 hover:bg-red-600 cursor-pointer"
+        onClick={() => handleOpen("ไม่จ่ายบิล")}
+      >
+        <p>ไม่จ่ายบิล</p>
+      </div>
         </div>
       </div>
-    </>
+       <DialogConfirm
+        open={open}
+        actionType={actionType}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+    </div>
   );
 };
 

@@ -4,13 +4,20 @@ import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { Divider, Drawer, List, ListItem } from "@mui/material";
+import { Drawer, List, ListItem } from "@mui/material";
+import { useRouter, usePathname } from "next/navigation"; // 👈 usePathname
 
 const TopBar = () => {
+  const router = useRouter();
+  const pathname = usePathname(); // path ปัจจุบัน เช่น "/home" หรือ "/data"
+
   const [open, setOpen] = useState(false);
+
+  // function ตรวจสอบ active
+  const isActive = (path: string) => pathname === path;
 
   return (
     <>
@@ -30,48 +37,50 @@ const TopBar = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <div
           style={{ width: 250 }}
           role="presentation"
-          onClick={() => setOpen(false)}
-          onKeyDown={() => setOpen(false)}
           className="bg-[#72c46a] h-screen text-white"
         >
           <div className="w-full h-[60px] flex justify-end pr-3">
             <IconButton onClick={() => setOpen(false)}>
-              <CloseIcon  />
+              <CloseIcon />
             </IconButton>
           </div>
           <List className="flex flex-col gap-3">
             <ListItem
-              className="cursor-pointer"
-              onClick={() => console.log("หน้าแรก")}
+              className={`cursor-pointer ${
+                isActive("/home") ? "bg-orange-500" : ""
+              } px-4 py-2 rounded`}
+              onClick={() => {
+                router.push("/home"); // ไปหน้า
+                setOpen(false); // ปิด sidebar
+              }}
             >
-              <div>หน้าแรก</div>
+              หน้าแรก
             </ListItem>
             <ListItem
-              className="cursor-pointer"
-              onClick={() => console.log("เกี่ยวกับเรา")}
+              className={`cursor-pointer ${
+                isActive("/data") ? "bg-orange-500" : ""
+              } px-4 py-2 rounded`}
+              onClick={() => {
+                router.push("/data"); // ไปหน้า
+                setOpen(false); // ปิด sidebar
+              }}
             >
-              <div>เกี่ยวกับเรา</div>
+              ดูข้อมูล
             </ListItem>
-            <ListItem
-              className="cursor-pointer"
+            {/* <ListItem
+              className={`cursor-pointer ${
+                isActive("/contact") ? "bg-orange-500" : ""
+              } px-4 py-2 rounded`}
               onClick={() => console.log("ติดต่อ")}
             >
-              <div>ติดต่อ</div>
-            </ListItem>
+              ติดต่อ
+            </ListItem> */}
           </List>
-          <Divider className="pt-5" />
-          <div className="w-full flex justify-center mt-10">
-          <div
-             className="w-[80%] h-[40px] flex items-center rounded-[15px] justify-center bg-red-500"
-              onClick={() => console.log("ออกจากระบบ")}
-            >
-              <p>ออกจากระบบ</p>
-            </div>
-            </div>
         </div>
       </Drawer>
     </>
