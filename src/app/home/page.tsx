@@ -1,7 +1,7 @@
 "use client";
 
 import DialogConfirm from "@/componants/dialog";
-import { Autocomplete, TextField } from "@mui/material";
+import { Alert, Autocomplete, Snackbar, TextField } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -29,6 +29,10 @@ const HomePage = () => {
   //Dialog
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState<string | null>(null);
+
+  // State สำหรับ snackbar
+const [snackbarOpen, setSnackbarOpen] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState("");
   
 
   const handleResetValue = () => {
@@ -88,39 +92,47 @@ const HomePage = () => {
     setActionType(null);
   };
 
+  const handleSnackbarClose = () => {
+  setSnackbarOpen(false);
+};
 
-  const handleCreate = (payBill: string) => {
-    const now = new Date();
-    const yearBE = now.getFullYear() + 543;
-    const dateAt = `${pad(now.getHours())}:${pad(now.getMinutes())} ${pad(
-      now.getDate()
-    )}/${pad(now.getMonth() + 1)}/พ.ศ. ${yearBE}`;
 
-    const data = {
-      address,
-      woodType,
-      carNumber,
-      weight,
-      price,
-      payBill,
-      dateAt,
-    };
+const handleCreate = (payBill: string) => {
+  const now = new Date();
+  const yearBE = now.getFullYear() + 543;
+  const dateAt = `${pad(now.getHours())}:${pad(now.getMinutes())} ${pad(
+    now.getDate()
+  )}/${pad(now.getMonth() + 1)}/พ.ศ. ${yearBE}`;
 
-    console.log("data", data);
-
-    axios
-      .post(
-        "https://wood-api-zl5b.onrender.com/data",
-        data
-      )
-      .then((res) => {
-        console.log("POST success", res.data);
-        handleResetValue();
-      })
-      .catch((err) => {
-        console.error("POST error", err);
-      });
+  const data = {
+    address,
+    woodType,
+    carNumber,
+    weight,
+    price,
+    payBill,
+    dateAt,
   };
+
+  console.log("data", data);
+
+  axios
+    .post("https://wood-api-zl5b.onrender.com/data", data)
+    .then((res) => {
+      console.log("POST success", res.data);
+      handleResetValue();
+
+      // แสดง snackbar success
+      setSnackbarMessage("เพิ่มข้อมูลสำเร็จ!");
+      setSnackbarOpen(true);
+    })
+    .catch((err) => {
+      console.error("POST error", err);
+
+      setSnackbarMessage("เกิดข้อผิดพลาดในการเพิ่มข้อมูล");
+      setSnackbarOpen(true);
+    });
+};
 
   useEffect(() => {
  fetchTypes()
@@ -206,6 +218,20 @@ const HomePage = () => {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
+      <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={3000}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <Alert
+        onClose={handleSnackbarClose}
+        severity={snackbarMessage.includes("สำเร็จ") ? "success" : "error"}
+        sx={{ width: "100%" }}
+      >
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
     </div>
   );
 };
