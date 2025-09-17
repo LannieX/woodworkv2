@@ -33,6 +33,12 @@ const DataPage = () => {
         price: row[4] || "",
         payBill: row[5] || "",
         dateAt: row[6] || "",
+        cutPrice: row[7] || "",
+        carryPrice: row[8] || "",
+        carPrice: row[9] || "",
+        carTPrice: row[10] || "",
+        constPrice: row[11] || "",
+        profitPrice: row[12] || "",
       }));
 
       const sortedData = [...mapped].reverse();
@@ -75,8 +81,8 @@ const DataPage = () => {
       </div>
     </div>
         </div>
-        <TableContainer className="overflow-x-auto overflow-y-auto" style={{ maxHeight: 900 }}>
-          <Table stickyHeader className="min-w-[900px]">
+        <TableContainer className="overflow-x-auto overflow-y-auto" style={{ maxHeight: 1000 }}>
+          <Table stickyHeader className="min-w-[1000px]">
             <TableHead>
               <TableRow>
                 <TableCell
@@ -119,12 +125,42 @@ const DataPage = () => {
                 >
                   วันที่
                 </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  หักค่าตัด
+                </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  หักค่าแบก
+                </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  หัดค่ารถ
+                </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  หักค่ารถไถ
+                </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  ค่าต้นทุน
+                </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  กำไร
+                </TableCell>
               </TableRow>
             </TableHead>
            <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={8} sx={{ padding: 0 }}>
+                <TableCell colSpan={14} sx={{ padding: 0 }}>
                   <LinearProgress />
                 </TableCell>
               </TableRow>
@@ -154,6 +190,24 @@ const DataPage = () => {
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
                     {item.dateAt}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.cutPrice}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.carryPrice}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.carPrice}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.carTPrice}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.constPrice}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.profitPrice}
                   </TableCell>
                 </TableRow>
               ))

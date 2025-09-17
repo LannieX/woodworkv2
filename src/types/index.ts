@@ -6,4 +6,10 @@ export interface DataItem {
   price: string | number;
   payBill: string;
   dateAt: string;
+  cutPrice: string;
+  carryPrice: string;
+  carPrice: string;
+carTPrice: string;
+constPrice: string;
+profitPrice: string;
 }
