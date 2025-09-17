@@ -166,7 +166,7 @@ const DataPage = () => {
            <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={14} sx={{ padding: 0 }}>
+                <TableCell colSpan={15} sx={{ padding: 0 }}>
                   <LinearProgress />
                 </TableCell>
               </TableRow>
