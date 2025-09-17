@@ -12,7 +12,7 @@ import { useRouter, usePathname } from "next/navigation"; // 👈 usePathname
 
 const TopBar = () => {
   const router = useRouter();
-  const pathname = usePathname(); // path ปัจจุบัน เช่น "/home" หรือ "/data"
+  const pathname = usePathname();
 
   const [open, setOpen] = useState(false);
 
@@ -72,14 +72,6 @@ const TopBar = () => {
             >
               ดูข้อมูล
             </ListItem>
-            {/* <ListItem
-              className={`cursor-pointer ${
-                isActive("/contact") ? "bg-orange-500" : ""
-              } px-4 py-2 rounded`}
-              onClick={() => console.log("ติดต่อ")}
-            >
-              ติดต่อ
-            </ListItem> */}
           </List>
         </div>
       </Drawer>

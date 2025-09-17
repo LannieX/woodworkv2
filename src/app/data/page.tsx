@@ -39,6 +39,7 @@ const DataPage = () => {
         carTPrice: row[10] || "",
         constPrice: row[11] || "",
         profitPrice: row[12] || "",
+        totalPrice:row[13] || "",
       }));
 
       const sortedData = [...mapped].reverse();
@@ -155,6 +156,11 @@ const DataPage = () => {
                 >
                   กำไร
                 </TableCell>
+                <TableCell
+                  sx={{ backgroundColor: "#FFD580", border: "1px solid #ccc" }}
+                >
+                  ราคารวม
+                </TableCell>
               </TableRow>
             </TableHead>
            <TableBody>
@@ -208,6 +214,8 @@ const DataPage = () => {
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
                     {item.profitPrice}
+                  </TableCell><TableCell sx={{ border: "1px solid #ccc", backgroundColor: "#f3f3f3" }}>
+                    {item.totalPrice}
                   </TableCell>
                 </TableRow>
               ))

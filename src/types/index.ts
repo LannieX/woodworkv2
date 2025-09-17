@@ -9,7 +9,8 @@ export interface DataItem {
   cutPrice: string;
   carryPrice: string;
   carPrice: string;
-carTPrice: string;
-constPrice: string;
-profitPrice: string;
+  carTPrice: string;
+  constPrice: string;
+  profitPrice: string;
+  totalPrice: string;
 }

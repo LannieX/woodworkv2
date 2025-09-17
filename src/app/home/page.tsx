@@ -163,6 +163,7 @@ const HomePage = () => {
       carTPrice,
       constPrice,
       profitPrice,
+      totalPrice
     } = calculatePrices(Number(weight), Number(price), useCar);
 
     const data = {
@@ -179,6 +180,7 @@ const HomePage = () => {
       carTPrice,
       constPrice,
       profitPrice,
+      totalPrice
     };
 
     console.log("data", data);
